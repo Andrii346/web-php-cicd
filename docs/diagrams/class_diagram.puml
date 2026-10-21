@@ -1,0 +1,159 @@
+@startuml
+skinparam classAttributeIconSize 0
+
+' ================= МОДЕЛІ =================
+
+class User {
+    - id: BigInteger
+    - email: String
+    - passwordHash: String
+    - role: String
+    - isActive: Boolean
+    + getAuthId(): BigInteger
+    + verifyCredentials(pass: String): Boolean
+    + updatePassword(newPass: String): Boolean
+    + hasRole(roleName: String): Boolean
+    + deactivate(): Void
+}
+
+' Наслідування: Головний бухгалтер є специфічним типом користувача
+class ChiefAccountantUser {
+    - digitalSignatureCert: String
+    - approvalLimit: Decimal
+    - licenseNumber: String
+    - certifiedUntil: Date
+    - canUnlockPeriods: Boolean
+    + signReport(reportId: BigInteger): String
+    + approvePayroll(periodId: BigInteger): Boolean
+    + lockPeriod(periodId: BigInteger): Void
+    + unlockPeriod(periodId: BigInteger): Void
+    + auditChanges(recordId: BigInteger): Collection
+}
+
+class Department {
+    - id: BigInteger
+    - code: String
+    - name: String
+    - costCenter: String
+    - budgetLimit: Decimal
+    + employees(): HasMany
+    + getHeadCount(): Integer
+    + getTotalMonthlyBudget(): Decimal
+    + isBudgetExceeded(): Boolean
+    + updateLimit(newLimit: Decimal): Void
+}
+
+class Position {
+    - id: BigInteger
+    - title: String
+    - baseSalary: Decimal
+    - hourlyRate: Decimal
+    - gradeLevel: Integer
+    - isHazardous: Boolean
+    + employees(): HasMany
+    + calculateHourlyCost(): Decimal
+    + updateBaseSalary(amount: Decimal): Void
+    + getBonusRate(): Float
+    + hasOvertimeAllowance(): Boolean
+}
+
+class Employee {
+    - id: BigInteger
+    - taxNumber: String
+    - firstName: String
+    - lastName: String
+    - iban: String
+    + department(): BelongsTo
+    + position(): BelongsTo
+    + timesheets(): HasMany
+    + payrollRecords(): HasMany
+    + getFullName(): String
+}
+
+class Timesheet {
+    - id: BigInteger
+    - employeeId: BigInteger
+    - workDate: Date
+    - hoursWorked: Float
+    - statusCode: String
+    + employee(): BelongsTo
+    + isOvertime(): Boolean
+    + isSickLeave(): Boolean
+    + isVacation(): Boolean
+    + markAsHoliday(): Void
+}
+
+class PayrollPeriod {
+    - id: BigInteger
+    - year: Integer
+    - month: Integer
+    - isClosed: Boolean
+    - closedAt: NullableDateTime
+    + records(): HasMany
+    + closePeriod(): Void
+    + reopenPeriod(): Boolean
+    + getWorkingDaysCount(): Integer
+    + getTotalFundExpense(): Decimal
+}
+
+class PayrollRecord {
+    - id: BigInteger
+    - employeeId: BigInteger
+    - grossSalary: Decimal
+    - personalTax: Decimal
+    - netSalary: Decimal
+    + payrollPeriod(): BelongsTo
+    + employee(): BelongsTo
+    + calculateNetPay(): Decimal
+    + calculateMilitaryTax(): Decimal
+    + getEmployerSocialContribution(): Decimal
+}
+
+' ================= КОНТРОЛЕРИ =================
+
+class TimesheetController {
+    - timesheetService: Object
+    - validator: Object
+    - currentPeriod: String
+    - maxHoursPerDay: Float
+    - logChannel: String
+    + index(request: Request): View
+    + store(request: Request): RedirectResponse
+    + showByDepartment(deptId: BigInteger): JsonResponse
+    + importFromBiometric(file: UploadedFile): JsonResponse
+    + approveBatch(timesheetIds: Array): Boolean
+}
+
+class PayrollCalculationController {
+    - salaryEngine: Object
+    - taxService: Object
+    - bankExportService: Object
+    - pdfGenerator: Object
+    - notificationService: Object
+    + calculateMonth(periodId: BigInteger): View
+    + recalculateEmployee(empId: BigInteger): JsonResponse
+    + generatePayslipPdf(recordId: BigInteger): BinaryFileResponse
+    + exportBankRegistry(periodId: BigInteger): BinaryFileResponse
+    + closeCurrentMonth(periodId: BigInteger): RedirectResponse
+}
+
+' ================= ВІДНОШЕННЯ =================
+
+' 1. Наслідування (Generalization)
+User <|-- ChiefAccountantUser
+
+' 2. Агрегація (Aggregation): Відділ об'єднує співробітників (при розформуванні відділу люди не видаляються)
+Department "1" o-- "0..*" Employee : містить
+
+' 3. Композиція (Composition): Записи зарплати нерозривно прив'язані до розрахункового місяця
+PayrollPeriod "1" *-- "1..*" PayrollRecord : складається з
+
+' 4. Асоціації (Association)
+Position "1" --> "0..*" Employee : займають
+Employee "1" --> "0..*" Timesheet : має
+Employee "1" --> "0..*" PayrollRecord : нараховується
+
+TimesheetController ..> Timesheet : опрацьовує
+PayrollCalculationController ..> PayrollRecord : генерує
+PayrollCalculationController ..> PayrollPeriod : керує
+@enduml

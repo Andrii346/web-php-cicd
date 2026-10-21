@@ -1,0 +1,55 @@
+@startuml
+left to right direction
+skinparam packageStyle rectangle
+
+actor "Працівник" as Employee
+actor "Бухгалтер" as Accountant
+actor "Головний бухгалтер" as ChiefAccountant
+
+' Узагальнення (наслідування) акторів: Головний бухгалтер володіє всіма правами звичайного бухгалтера
+Accountant <|-- ChiefAccountant : generalization
+
+rectangle "Робоче місце бухгалтера (Зарплата)" {
+    ' Прецеденти працівника
+    usecase "Переглянути розрахунковий листок" as UC_ViewPayslip
+    usecase "Завантажити листок у PDF" as UC_DownloadPayslipPDF
+    usecase "Подати заяву на відпустку" as UC_ApplyVacation
+    
+    ' Прецеденти бухгалтера
+    usecase "Авторизуватися в системі" as UC_Auth
+    usecase "Вести табель обліку часу" as UC_ManageTimesheet
+    usecase "Розрахувати заробітну плату" as UC_CalculateSalary
+    usecase "Застосувати податкову пільгу" as UC_ApplyTaxRelief
+    usecase "Сформувати виплатну відомість" as UC_GeneratePayrollSheet
+    usecase "Експорт банківського реєстру" as UC_ExportBankFile
+    
+    ' Прецеденти головного бухгалтера
+    usecase "Затвердити розрахунковий місяць" as UC_ApproveMonth
+    usecase "Сформувати звіт 1ДФ до ДПС" as UC_GenerateTaxReport
+    usecase "Блокувати редагування періоду" as UC_LockPeriod
+}
+
+' Зв'язки Працівника (3 прецеденти)
+Employee -- UC_ViewPayslip
+Employee -- UC_DownloadPayslipPDF
+Employee -- UC_ApplyVacation
+
+' Зв'язки Бухгалтера (3 основні прецеденти)
+Accountant -- UC_ManageTimesheet
+Accountant -- UC_CalculateSalary
+Accountant -- UC_GeneratePayrollSheet
+
+' Зв'язки Головного Бухгалтера (3 специфічні прецеденти)
+ChiefAccountant -- UC_ApproveMonth
+ChiefAccountant -- UC_GenerateTaxReport
+ChiefAccountant -- UC_LockPeriod
+
+' Include / Extend зв'язки
+UC_ViewPayslip <.. UC_DownloadPayslipPDF : <<extend>>
+UC_CalculateSalary ..> UC_Auth : <<include>>
+UC_CalculateSalary ..> UC_ManageTimesheet : <<include>>
+UC_CalculateSalary <.. UC_ApplyTaxRelief : <<extend>>
+UC_GeneratePayrollSheet <.. UC_ExportBankFile : <<extend>>
+UC_ApproveMonth ..> UC_LockPeriod : <<include>>
+UC_GenerateTaxReport ..> UC_Auth : <<include>>
+@enduml
