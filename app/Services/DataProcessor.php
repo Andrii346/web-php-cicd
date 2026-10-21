@@ -10,7 +10,7 @@ class DataProcessor
      * Задача 1 (Таблиця 3.2, №2):
      * Перетворити цілочисловий масив, вставивши після кожного додатного елемента нульовий елемент.
      *
-     * @param int[] $numbers
+     * @param  int[]  $numbers
      * @return int[]
      */
     public function insertZeroAfterPositives(array $numbers): array
@@ -34,11 +34,10 @@ class DataProcessor
     public function countWordsStartingWithConsonant(string $text): int
     {
         $words = preg_split('/\s+/u', trim($text), -1, PREG_SPLIT_NO_EMPTY);
-        if (!$words) {
+        if (! $words) {
             return 0;
         }
 
-        
         $consonantsPattern = '/^[бвгґджзклмнпрстфхцчшщbcdfghjklmnpqrstvwxyz]/ui';
         $count = 0;
 
@@ -57,13 +56,12 @@ class DataProcessor
      */
     public function findMaxNumberInString(string $numbersString): float
     {
-        
+
         $items = preg_split('/\s+/', trim($numbersString), -1, PREG_SPLIT_NO_EMPTY);
-        if (!$items) {
+        if (! $items) {
             return 0.0;
         }
 
-        
         $numericValues = array_map('floatval', $items);
 
         return max($numericValues);

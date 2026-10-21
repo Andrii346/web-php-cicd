@@ -8,10 +8,10 @@ use Exception;
 
 class EntityService
 {
-
     public function calculateNetSalary(float $grossSalary, float $totalTaxPercent): float
     {
         $taxAmount = $grossSalary * ($totalTaxPercent / 100);
+
         return round($grossSalary - $taxAmount, 2);
     }
 

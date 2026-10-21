@@ -7,7 +7,7 @@ $paymentTypes = [
     'Премія за місяць',
     'Лікарняні виплати',
     'Відпускні',
-    'Надбавка за вислугу років'
+    'Надбавка за вислугу років',
 ];
 
 sort($paymentTypes);
@@ -17,7 +17,7 @@ $employee = [
     'taxNumber' => '3254918234',
     'firstName' => 'Олександр',
     'lastName' => 'Ковальчук',
-    'iban' => 'UA823052990000026001234567890'
+    'iban' => 'UA823052990000026001234567890',
 ];
 ?>
 <!DOCTYPE html>
@@ -34,16 +34,16 @@ $employee = [
 <body>
     <h2>Відсортовані типи виплат (Індексний масив):</h2>
     <ul>
-        <?php foreach ($paymentTypes as $type): ?>
+        <?php foreach ($paymentTypes as $type) { ?>
             <li><?= htmlspecialchars($type) ?></li>
-        <?php endforeach; ?>
+        <?php } ?>
     </ul>
 
     <h2>Дані працівника (Асоціативний масив сутності Employee):</h2>
     <ul>
-        <?php foreach ($employee as $key => $value): ?>
-            <li><strong><?= htmlspecialchars((string)$key) ?>:</strong> <?= htmlspecialchars((string)$value) ?></li>
-        <?php endforeach; ?>
+        <?php foreach ($employee as $key => $value) { ?>
+            <li><strong><?= htmlspecialchars((string) $key) ?>:</strong> <?= htmlspecialchars((string) $value) ?></li>
+        <?php } ?>
     </ul>
 </body>
 </html>
