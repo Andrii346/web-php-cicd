@@ -1,4 +1,4 @@
-name: PHP CI Application
+name: PHP-CI
 
 on:
   push:
@@ -7,26 +7,33 @@ on:
     branches: [ "main" ]
 
 jobs:
-  build:
+  laravel-tests:
     runs-on: ubuntu-latest
 
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      - name: Set up PHP
+      - name: Setup PHP
         uses: shivammathur/setup-php@v2
         with:
-          php-version: '8.3.6'
+          php-version: '8.3'
+          extensions: mbstring, xml, ctype, iconv, intl, pdo_sqlite, fileinfo
+
+      - name: Copy .env file
+        run: php -r "file_exists('.env') || copy('.env.example', '.env');"
 
       - name: Install Dependencies
-        run: composer install -q --no-ansi --no-interaction --no-scripts --prefer-dist
+        run: composer install -q --no-ansi --no-interaction --no-progress --prefer-dist
+
+      - name: Generate Application Key
+        run: php artisan key:generate --env=testing
 
       - name: Lint code with Pint
         run: ./vendor/bin/pint --test
 
-      - name: Run unit tests
-        run: ./vendor/bin/phpunit tests/Unit
+      - name: Run Application Tests
+        run: php artisan test
 
       - name: Demonstrate GitHub Secrets
         run: |
