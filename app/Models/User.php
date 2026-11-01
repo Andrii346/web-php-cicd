@@ -1,38 +1,32 @@
 <?php
 
-declare(strict_types=1);
-
 namespace App\Models;
 
-use App\Interfaces\ExportableInterface;
-use App\Traits\JsonExportTrait;
+// use Illuminate\Contracts\Auth\MustVerifyEmail;
+use Database\Factories\UserFactory;
+use Illuminate\Database\Eloquent\Attributes\Fillable;
+use Illuminate\Database\Eloquent\Attributes\Hidden;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Foundation\Auth\User as Authenticatable;
+use Illuminate\Notifications\Notifiable;
 
-class User extends AbstractEntity implements ExportableInterface
+#[Fillable(['name', 'email', 'password'])]
+#[Hidden(['password', 'remember_token'])]
+class User extends Authenticatable
 {
-    use JsonExportTrait;
+    /** @use HasFactory<UserFactory> */
+    use HasFactory, Notifiable;
 
-    public function __construct(
-        string $id,
-        string $createdAt,
-        private string $name,
-        private string $email,
-        private string $role
-    ) {
-        parent::__construct($id, $createdAt);
-    }
-
-    public function getDetails(): string
+    /**
+     * Get the attributes that should be cast.
+     *
+     * @return array<string, string>
+     */
+    protected function casts(): array
     {
-        return "Користувач #{$this->id}: {$this->name} ({$this->email}), Роль: {$this->role}";
-    }
-
-    public function getName(): string
-    {
-        return $this->name;
-    }
-
-    public function getEmail(): string
-    {
-        return $this->email;
+        return [
+            'email_verified_at' => 'datetime',
+            'password' => 'hashed',
+        ];
     }
 }
