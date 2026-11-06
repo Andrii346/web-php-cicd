@@ -1,6 +1,8 @@
 <?php
 
-use App\Http\Middleware\CheckAccountantAccess;
+use App\Http\Middleware\EnsureAccountantAccess;
+use App\Http\Middleware\EnsureValidPayrollClient;
+use App\Http\Middleware\LogPayrollActivity;
 use Illuminate\Foundation\Application;
 use Illuminate\Foundation\Configuration\Exceptions;
 use Illuminate\Foundation\Configuration\Middleware;
@@ -14,7 +16,9 @@ return Application::configure(basePath: dirname(__DIR__))
     )
     ->withMiddleware(function (Middleware $middleware): void {
         $middleware->alias([
-            'accountant.access' => CheckAccountantAccess::class,
+            'accountant.access' => EnsureAccountantAccess::class,
+            'payroll.client' => EnsureValidPayrollClient::class,
+            'payroll.log' => LogPayrollActivity::class,
         ]);
         $middleware->validateCsrfTokens(except: [
             'payrolls',
