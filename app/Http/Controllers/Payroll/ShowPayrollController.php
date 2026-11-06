@@ -3,28 +3,24 @@
 namespace App\Http\Controllers\Payroll;
 
 use App\Http\Controllers\Controller;
-use App\Repositories\PayrollRepository;
+use App\Models\Payroll;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
+use Illuminate\View\View;
 
 class ShowPayrollController extends Controller
 {
     /**
      * Handle the incoming request.
      */
-    public function __invoke(string $id): JsonResponse
+    public function __invoke(Request $request, int $id): View|JsonResponse
     {
-        $record = PayrollRepository::find((int) $id);
-        if ($record === null) {
-            return response()->json([
-                'status' => 'error',
-                'message' => 'Розрахунковий лист із зазначеним ідентифікатором не знайдено.',
-            ], 404);
+        $payroll = Payroll::with(['employee', 'components'])->findOrFail($id);
+
+        if ($request->expectsJson()) {
+            return response()->json(['status' => 'success', 'data' => $payroll]);
         }
 
-        return response()->json([
-            'status' => 'success',
-            'data' => $record,
-        ], 200);
+        return view('payrolls.show', compact('payroll'));
     }
 }

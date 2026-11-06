@@ -3,24 +3,24 @@
 namespace App\Http\Controllers\Payroll;
 
 use App\Http\Controllers\Controller;
-use Illuminate\Http\Request;
+use App\Models\Payroll;
+use Illuminate\Http\JsonResponse;
 
 class ReportController extends Controller
 {
     /**
      * Handle the incoming request.
      */
-    public function __invoke(Request $request)
+   public function __invoke(): JsonResponse
     {
         return response()->json([
             'status' => 'success',
-            'report' => [
-                'current_period' => '2026-10',
-                'total_accrued' => 57000.00,
-                'total_taxes_withheld' => 12675.00,
-                'total_payable' => 52325.00,
-                'currency' => 'UAH',
+            'summary' => [
+                'total_records'    => Payroll::count(),
+                'total_net_paid'   => round((float) Payroll::sum('net_salary'), 2),
+                'total_tax_amount' => round((float) Payroll::sum('tax_amount'), 2),
+                'trashed_records'  => Payroll::onlyTrashed()->count(),
             ],
-        ], 200);
+        ]);
     }
 }
