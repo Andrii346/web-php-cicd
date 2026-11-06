@@ -12,7 +12,7 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('payroll_components', function (Blueprint $table) {
-           $table->id();
+            $table->id();
             $table->string('name')->unique();
             $table->string('code')->unique();
             $table->enum('type', ['allowance', 'deduction']);

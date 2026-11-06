@@ -23,14 +23,14 @@ class PayrollFactory extends Factory
         $tax = round(($base + $bonus) * 0.195, 2);
 
         return [
-            'employee_id' => Employee::factory(), 
-            'period'      => fake()->randomElement(['2026-09', '2026-10', '2026-11']),
+            'employee_id' => Employee::factory(),
+            'period' => fake()->randomElement(['2026-09', '2026-10', '2026-11']),
             'base_salary' => $base,
             'worked_days' => fake()->numberBetween(18, 22),
-            'bonus'       => $bonus,
-            'tax_amount'  => $tax,
-            'net_salary'  => round(($base + $bonus) - $tax, 2),
-            'status'      => 'calculated',
+            'bonus' => $bonus,
+            'tax_amount' => $tax,
+            'net_salary' => round(($base + $bonus) - $tax, 2),
+            'status' => 'calculated',
         ];
     }
 }

@@ -18,8 +18,8 @@ class LogPayrollActivity
     {
         Log::info('Payroll Action Executed', [
             'method' => $request->method(),
-            'uri'    => $request->getRequestUri(),
-            'ip'     => $request->ip(),
+            'uri' => $request->getRequestUri(),
+            'ip' => $request->ip(),
         ]);
 
         return $next($request);

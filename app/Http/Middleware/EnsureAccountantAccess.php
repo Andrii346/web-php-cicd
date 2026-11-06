@@ -19,11 +19,12 @@ class EnsureAccountantAccess
             $hasAccess = $request->hasHeader('X-App-Client') || $request->header('X-Accountant-Role') === 'chief';
             if (! $hasAccess) {
                 return response()->json([
-                    'status'  => 'error',
+                    'status' => 'error',
                     'message' => 'Доступ заборонено: необхідні права бухгалтера (X-App-Client).',
                 ], Response::HTTP_FORBIDDEN);
             }
         }
+
         return $next($request);
     }
 }

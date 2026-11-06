@@ -25,7 +25,6 @@ class StorePayrollController extends Controller
         $baseSalary = round(($employee->base_salary / $standardDays) * $workedDays, 2);
         $bonus = isset($validated['bonus']) ? (float) $validated['bonus'] : 0.00;
 
-        
         $syncData = [];
         $allowancesTotal = 0.00;
         $deductionsTotal = 0.00;
@@ -49,7 +48,7 @@ class StorePayrollController extends Controller
         }
 
         $grossSalary = $baseSalary + $bonus + $allowancesTotal;
-        $taxAmount = round($grossSalary * 0.195, 2); 
+        $taxAmount = round($grossSalary * 0.195, 2);
         $netSalary = round($grossSalary - $taxAmount - $deductionsTotal, 2);
 
         $attachmentPath = null;
@@ -58,14 +57,14 @@ class StorePayrollController extends Controller
         }
 
         $payroll = Payroll::create([
-            'employee_id'     => $employee->id,
-            'period'          => $validated['period'],
-            'base_salary'     => $baseSalary,
-            'worked_days'     => $workedDays,
-            'bonus'           => $bonus,
-            'tax_amount'      => $taxAmount,
-            'net_salary'      => $netSalary,
-            'status'          => 'calculated',
+            'employee_id' => $employee->id,
+            'period' => $validated['period'],
+            'base_salary' => $baseSalary,
+            'worked_days' => $workedDays,
+            'bonus' => $bonus,
+            'tax_amount' => $taxAmount,
+            'net_salary' => $netSalary,
+            'status' => 'calculated',
             'attachment_path' => $attachmentPath,
         ]);
 

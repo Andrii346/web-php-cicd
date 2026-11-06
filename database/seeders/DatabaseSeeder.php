@@ -21,7 +21,7 @@ class DatabaseSeeder extends Seeder
         Employee::factory(5)->create()->each(function (Employee $employee) use ($components) {
             $payroll = Payroll::factory()->create([
                 'employee_id' => $employee->id,
-                'period'      => '2026-10',
+                'period' => '2026-10',
                 'base_salary' => $employee->base_salary,
             ]);
 

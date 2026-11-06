@@ -27,9 +27,9 @@ class Payroll extends Model
     protected $casts = [
         'base_salary' => 'float',
         'worked_days' => 'integer',
-        'bonus'       => 'float',
-        'tax_amount'  => 'float',
-        'net_salary'  => 'float',
+        'bonus' => 'float',
+        'tax_amount' => 'float',
+        'net_salary' => 'float',
     ];
 
     public function employee(): BelongsTo

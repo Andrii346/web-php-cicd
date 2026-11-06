@@ -18,13 +18,13 @@ class EmployeeFactory extends Factory
     public function definition(): array
     {
         return [
-            'first_name'  => fake()->firstName(),
-            'last_name'   => fake()->lastName(),
-            'email'       => fake()->unique()->safeEmail(),
-            'tax_number'  => fake()->unique()->numerify('##########'),
-            'position'    => fake()->randomElement(['Бухгалтер', 'PHP Розробник', 'Системний аналітик', 'HR Менеджер']),
+            'first_name' => fake()->firstName(),
+            'last_name' => fake()->lastName(),
+            'email' => fake()->unique()->safeEmail(),
+            'tax_number' => fake()->unique()->numerify('##########'),
+            'position' => fake()->randomElement(['Бухгалтер', 'PHP Розробник', 'Системний аналітик', 'HR Менеджер']),
             'base_salary' => fake()->randomFloat(2, 18000, 65000),
-            'is_active'   => true,
+            'is_active' => true,
         ];
     }
 }

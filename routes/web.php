@@ -20,12 +20,11 @@ Route::get('/', fn () => redirect()->route('payrolls.index'));
 
 Route::get('/health', function () {
     return response()->json([
-        'status'    => 'OK',
+        'status' => 'OK',
         'subsystem' => 'Payroll Accounting Workplace',
         'timestamp' => now()->toIso8601String(),
     ]);
 })->middleware('payroll.client');
-
 
 Route::prefix('employees')
     ->name('employees.')
@@ -37,7 +36,6 @@ Route::prefix('employees')
         Route::delete('/{id}', DeleteEmployeeController::class)->whereNumber('id')->middleware('accountant.access')->name('destroy');
     });
 
-
 Route::prefix('components')
     ->name('components.')
     ->middleware(['payroll.client', 'payroll.log'])
@@ -47,7 +45,6 @@ Route::prefix('components')
         Route::post('/', StoreComponentController::class)->middleware('accountant.access')->name('store');
         Route::delete('/{id}', DeleteComponentController::class)->whereNumber('id')->middleware('accountant.access')->name('destroy');
     });
-
 
 Route::prefix('payrolls')
     ->name('payrolls.')

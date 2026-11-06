@@ -23,9 +23,9 @@ class FilterPayrollRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'period'      => ['nullable', 'string', 'regex:/^\d{4}-(0[1-9]|1[0-2])$/'],
+            'period' => ['nullable', 'string', 'regex:/^\d{4}-(0[1-9]|1[0-2])$/'],
             'employee_id' => ['nullable', 'integer', 'exists:employees,id'],
-            'status'      => ['nullable', 'in:draft,calculated,paid'],
+            'status' => ['nullable', 'in:draft,calculated,paid'],
         ];
     }
 }

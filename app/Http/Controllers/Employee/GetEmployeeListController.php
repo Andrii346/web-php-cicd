@@ -21,7 +21,7 @@ class GetEmployeeListController extends Controller
             ->withCount('payrolls')
             ->when($validated['search'] ?? null, function ($q, $search) {
                 $q->where('last_name', 'like', "%{$search}%")
-                  ->orWhere('tax_number', 'like', "%{$search}%");
+                    ->orWhere('tax_number', 'like', "%{$search}%");
             })
             ->latest()
             ->paginate(15);
