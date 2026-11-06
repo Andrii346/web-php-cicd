@@ -15,12 +15,16 @@ class EnsureAccountantAccess
      */
     public function handle(Request $request, Closure $next): Response
     {
-        if ($request->expectsJson()) {
-            $hasAccess = $request->hasHeader('X-App-Client') || $request->header('X-Accountant-Role') === 'chief';
+        if ($request->expectsJson()) {            
+            $hasAccess = $request->hasHeader('X-Accountant-Token')
+                || $request->hasHeader('X-App-Client')
+                || $request->header('X-Accountant-Role') === 'chief'
+                || $request->bearerToken() !== null;
+
             if (! $hasAccess) {
                 return response()->json([
-                    'status' => 'error',
-                    'message' => 'Доступ заборонено: необхідні права бухгалтера (X-App-Client).',
+                    'status'  => 'access_denied',
+                    'message' => 'Доступ заборонено: необхідні права бухгалтера.',
                 ], Response::HTTP_FORBIDDEN);
             }
         }
