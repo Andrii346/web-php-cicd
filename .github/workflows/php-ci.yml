@@ -10,7 +10,6 @@ jobs:
   laravel-tests:
     runs-on: ubuntu-latest
 
-    # Підняття окремого контейнера MySQL для тестів у хмарі
     services:
       mysql:
         image: mysql:8.2
@@ -38,6 +37,16 @@ jobs:
 
       - name: Generate key
         run: php artisan key:generate
+
+      - name: Run Migrations
+        env:
+          DB_CONNECTION: mysql
+          DB_HOST: 127.0.0.1
+          DB_PORT: 3306
+          DB_DATABASE: payroll_db_test
+          DB_USERNAME: root
+          DB_PASSWORD: password
+        run: php artisan migrate --force
 
       - name: Run Tests with MySQL
         env:
